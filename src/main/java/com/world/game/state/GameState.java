@@ -1,6 +1,4 @@
 package com.world.game.state;
-
-
 import java.awt.*;
 import com.world.game.util.KeyHandler;
 import com.world.game.util.MouseHandler;

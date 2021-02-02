@@ -8,7 +8,6 @@ import java.awt.*;
 public class PlayState  extends GameState{
     public PlayState(GameStateManger gameStateManger){
         super(gameStateManger);
-
     }
 
     @Override
@@ -18,14 +17,16 @@ public class PlayState  extends GameState{
 
     @Override
     public void input(MouseHandler mouseHandler, KeyHandler keyHandler) {
+        if(keyHandler.up.down) {
+            System.out.println("d beging pressed");
+        }
 
     }
-
 
     @Override
     public void render(Graphics2D graphics2D) {
         graphics2D.setColor(Color.red);
-        graphics2D.fillRect(12,12,55,55);
+        graphics2D.fillRect(22,22,55,55);
     }
 
 }
