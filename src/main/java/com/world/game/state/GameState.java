@@ -1,9 +1,9 @@
-package java.com.world.game.state;
+package com.world.game.state;
 
-import com.world.game.util.KeyHandler;
-import com.world.game.util.MouseHandler;
 
 import java.awt.*;
+import com.world.game.util.KeyHandler;
+import com.world.game.util.MouseHandler;
 
 public abstract class GameState {
     private GameStateManger gameStateManger;
@@ -12,5 +12,5 @@ public abstract class GameState {
     }
     public abstract void update();
     public abstract void input(MouseHandler mouseHandler, KeyHandler keyHandler);
-    public abstract  void render(Graphics2D graphics2D);
+    public abstract void render(Graphics2D graphics2D);
 }

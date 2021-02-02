@@ -1,4 +1,4 @@
-package java.com.world.game;
+package com.world.game;
 
 import javax.swing.*;
 

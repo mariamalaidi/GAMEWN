@@ -1,12 +1,11 @@
-package java.com.world.game;
-
+package com.world.game;
 import com.world.game.state.GameStateManger;
 import com.world.game.util.KeyHandler;
 import com.world.game.util.MouseHandler;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
 
 public class GamePanel extends JPanel implements Runnable{
     public static int width;
@@ -42,7 +41,6 @@ public class GamePanel extends JPanel implements Runnable{
         mouseHandler = new MouseHandler();
         keyHandler = new KeyHandler();
         gameStateManger = new GameStateManger();
-
     }
 
     @Override
@@ -64,14 +62,14 @@ public class GamePanel extends JPanel implements Runnable{
             int updateCount = 0;
             while (((now - lastUpdateTime) > TIME_BEFORE_UPDATE) && (updateCount < MOST_UPDATE_BEFORE_RENDER)) {
                 update();
-                input();
+                input(mouseHandler, keyHandler);
                 lastUpdateTime += TIME_BEFORE_UPDATE;
                 updateCount++;
             }
             if ((now - lastUpdateTime) > TIME_BEFORE_UPDATE) {
                 lastUpdateTime = now - TIME_BEFORE_UPDATE;
             }
-            input();
+            input(mouseHandler, keyHandler);
             render();
             lastRendered = now;
             frameCount++;
@@ -100,20 +98,25 @@ public class GamePanel extends JPanel implements Runnable{
 
     }
 
-    public void input(){
 
+    public void update(){
+        gameStateManger.update();
     }
-    public void update(){}
+
+    public void input(MouseHandler mouseHandler, KeyHandler keyHandler){
+        gameStateManger.input(mouseHandler, keyHandler);
+    }
 
     public void render(){
         if(graphics2D != null){
             graphics2D.setColor(new Color(66, 134,244));
             graphics2D.fillRect(0,0,width,height);
+            gameStateManger.render(graphics2D);
         }
     }
 
     public void draw(){
-        Graphics graphics = (Graphics) this.getGraphics();
+        Graphics graphics = this.getGraphics();
         graphics.drawImage(image, 0, 0, width,height,null);
         graphics.dispose();
     }
