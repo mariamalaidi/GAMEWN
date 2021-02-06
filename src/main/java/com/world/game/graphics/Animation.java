@@ -7,7 +7,7 @@ public class Animation {
     private int currentFrame;
     private int numFrames;
     private int count;
-    private int delay;
+    private int delays;
     private int timesPlayed;
 
     public Animation(BufferedImage[] frames){
@@ -23,11 +23,11 @@ public class Animation {
         currentFrame = 0;
         count = 0 ;
         timesPlayed = 0 ;
-        delay = 2;
+        delays = 2;
         numFrames = frames.length;
     }
-    public void setDelay(int delay){
-        this.delay = delay;
+    public void setDelays(int delays){
+        this.delays = delays;
     }
     public void setFrame(int frame){
         this.currentFrame = frame;
@@ -37,11 +37,11 @@ public class Animation {
     }
 
     public void update(){
-        if(delay == -1){
+        if(delays == -1){
             return ;
         }
         count++;
-        if(count == delay){
+        if(count == delays){
             currentFrame++;
             count = 0;
         }
@@ -51,8 +51,8 @@ public class Animation {
         }
     }
 
-    public int getDelay(){
-        return delay;
+    public int getDelays(){
+        return delays;
     }
     public int getFrame(){
         return currentFrame;
