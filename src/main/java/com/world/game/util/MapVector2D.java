@@ -5,8 +5,8 @@ public class MapVector2D {
     public float x;
     public float y;
 
-    public static float worldx;
-    public static float worldy;
+    public static float worldX;
+    public static float worldY;
 
     public MapVector2D(){
         x = y = 0;
@@ -40,12 +40,12 @@ public class MapVector2D {
     }
 
     public static void setWorldVar(float x, float y){
-        worldx = x;
-        worldy = y;
+        worldX = x;
+        worldY = y;
     }
 
     public MapVector2D getWorldVar(){
-        return new MapVector2D(x - worldx, y - worldy);
+        return new MapVector2D(x - worldX, y - worldY);
     }
 
     @Override
