@@ -94,11 +94,10 @@ public class Font {
     }
 
     public BufferedImage getLetter(char letter) {
-        int value = letter - 65;
+        int value = letter;
 
         int x = value % wLetter;
         int y = value / wLetter;
-        System.out.println(x+" , "+y);
         return getLetter(x, y);
     }
 }
