@@ -1,11 +1,17 @@
 package com.world.game;
 
 public class GameLauncher {
-    public GameLauncher(){
+
+    public static GameLauncher createGameLauncher(){
+        return new GameLauncher();
+    }
+
+    private GameLauncher(){
         new Window();
     }
 
     public static void main(String[] args) {
-           new GameLauncher();
+
+        GameLauncher gameLauncher = GameLauncher.createGameLauncher();
     }
 }

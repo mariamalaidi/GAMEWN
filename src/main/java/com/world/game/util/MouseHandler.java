@@ -11,8 +11,16 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     private static int mouseY = -1;
     private static int mousePressed = -1;
 
-    public MouseHandler(GamePanel gamePanel){
+    public static MouseHandler createMouseHandler(GamePanel gamePanel){
+        return new MouseHandler(gamePanel);
+    }
+
+    private MouseHandler(GamePanel gamePanel){
         gamePanel.addMouseListener(this);
+    }
+
+    private MouseHandler(){
+        throw new AssertionError();
     }
 
     public static int getMouseX() {
@@ -25,7 +33,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     }
 
 
-    public static int getMousePressed() {
+    public static int getButton() {
         return mousePressed;
     }
 

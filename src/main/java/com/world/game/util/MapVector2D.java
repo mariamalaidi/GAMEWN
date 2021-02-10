@@ -2,54 +2,68 @@ package com.world.game.util;
 
 public class MapVector2D {
 
-    public float x;
-    public float y;
-
+    public float Xcoordinate;
+    public float Ycoordinate;
     public static float worldX;
     public static float worldY;
 
-    public MapVector2D(){
-        x = y = 0;
+    public static MapVector2D createMapVector2D(){
+        return new MapVector2D();
     }
 
-    public MapVector2D(MapVector2D pos){
-        new MapVector2D(pos.x, pos.y);
+    public static MapVector2D createMapVector2D(MapVector2D position){
+        return new MapVector2D(position);
+    }
+    public  static  MapVector2D createMapVector2DwithCoordinate(float xcoordinate, float ycoordinate){
+        return new MapVector2D(xcoordinate, ycoordinate);
     }
 
-    public MapVector2D(float x, float y){
-        this.x = x;
-        this.y = y;
+    private MapVector2D(){
+        Xcoordinate = Ycoordinate = 0;
+    }
+
+
+    private MapVector2D(MapVector2D pos){
+        new MapVector2D(pos.Xcoordinate, pos.Ycoordinate);
+    }
+
+
+
+    private MapVector2D(float xcoordinate, float ycoordinate){
+        this.Xcoordinate = xcoordinate;
+        this.Ycoordinate = ycoordinate;
     }
 
     public void addX(float f){
-        x+=f;
+        Xcoordinate +=f;
     }
     public void addY(float f){
-        y+=f;
+        Ycoordinate +=f;
     }
-    public void setX(float f){
-        x= f;
+    public void setXcoordinate(float f){
+        Xcoordinate = f;
     }
-    public void setY(float f){
-        y = f;
+    public void setYcoordinate(float f){
+        Ycoordinate = f;
     }
+
 
     public void setVector(MapVector2D mapVector2D){
-        this.x = mapVector2D.x;
-        this.y = mapVector2D.y;
+        this.Xcoordinate = mapVector2D.Xcoordinate;
+        this.Ycoordinate = mapVector2D.Ycoordinate;
     }
 
-    public static void setWorldVar(float x, float y){
+    public static void setGameWorldCoordinates(float x, float y){
         worldX = x;
         worldY = y;
     }
 
-    public MapVector2D getWorldVar(){
-        return new MapVector2D(x - worldX, y - worldY);
+    public MapVector2D getGameWorldCoordinates(){
+        return new MapVector2D(Xcoordinate - worldX, Ycoordinate - worldY);
     }
 
     @Override
     public String toString(){
-        return x + " , " + y;
+        return "Position: "+Xcoordinate + " , " + Ycoordinate;
     }
 }

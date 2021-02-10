@@ -9,9 +9,14 @@ import java.util.List;
 public class KeyHandler implements KeyListener {
     public static List<Key> keys = new ArrayList<Key>();
 
-    public KeyHandler(GamePanel gamePanel){
+    public static KeyHandler createKeyHandler(GamePanel gamePanel){
+        return new KeyHandler(gamePanel);
+    }
+
+    private KeyHandler(GamePanel gamePanel){
             gamePanel.addKeyListener(this);
     }
+
 
     public class Key{
         public int presses, absorbs;
@@ -63,14 +68,15 @@ public class KeyHandler implements KeyListener {
     }
 
     public void toggle(KeyEvent keyEvent, boolean pressed){
-        if(keyEvent.getKeyCode() == KeyEvent.VK_W) up.toggle(pressed);
-        if(keyEvent.getKeyCode() == KeyEvent.VK_S) down.toggle(pressed);
-        if(keyEvent.getKeyCode() == KeyEvent.VK_A) left.toggle(pressed);
-        if(keyEvent.getKeyCode() == KeyEvent.VK_D) right.toggle(pressed);
-        if(keyEvent.getKeyCode() == KeyEvent.VK_SPACE) attack.toggle(pressed);
-        if(keyEvent.getKeyCode() == KeyEvent.VK_E) menu.toggle(pressed);
-        if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) enter.toggle(pressed);
-        if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) escape.toggle(pressed);
+
+        if(keyEvent.getKeyChar()== 'w') up.toggle(pressed);
+        if(keyEvent.getKeyChar() == 's') down.toggle(pressed);
+        if(keyEvent.getKeyChar() == 'a') left.toggle(pressed);
+        if(keyEvent.getKeyChar() == 'd') right.toggle(pressed);
+        if(keyEvent.getKeyChar() == ' ') attack.toggle(pressed);
+        if(keyEvent.getKeyChar() == 'e') menu.toggle(pressed);
+        if(keyEvent.getKeyChar() == '\n') enter.toggle(pressed);
+        if(keyEvent.getKeyChar() == '\\') escape.toggle(pressed);
     }
 
     @Override
@@ -80,6 +86,8 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
+        System.out.println("Hey");
+        System.out.println(keyEvent.getKeyChar());
         toggle(keyEvent, true);
     }
 

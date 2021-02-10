@@ -1,14 +1,13 @@
 package com.world.game.graphics;
 
 import com.world.game.util.MapVector2D;
-
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.io.File;
 import java.util.ArrayList;
 
-public class SpriteSheet {
+public class Sprite {
     private BufferedImage SPRTIEIMAGE = null;
     private BufferedImage[][] spriteArray;
     private final int TILE_SIZE = 32;
@@ -17,17 +16,29 @@ public class SpriteSheet {
     public int width;
     public int height;
 
-    public SpriteSheet(String file) throws IOException {
+    public static Sprite createSpriteFromImage(String file){
+        return new Sprite(file);
+    }
+
+    public static  Sprite createSpriteFromImageWithSize(String file, int width, int height){
+        return new Sprite(file, width, height);
+    }
+
+    private Sprite(String file)  {
         width = TILE_SIZE;
         height = TILE_SIZE;
         System.out.println("Loading : "+file+" ...");
-        SPRTIEIMAGE =loadSprite(file);
+        SPRTIEIMAGE = loadSprite(file);
+        widthSprite = SPRTIEIMAGE.getWidth()/width;
+        heightSprite = SPRTIEIMAGE.getHeight()/height;
+        loadSpriteArray();
     }
 
-    public SpriteSheet(String file, int width, int height){
+    private Sprite(String file, int width, int height)  {
         this.width = width;
         this.height = height;
         System.out.println("Loading : "+file+" ...");
+        SPRTIEIMAGE = loadSprite(file);
         widthSprite = SPRTIEIMAGE.getWidth()/width;
         heightSprite = SPRTIEIMAGE.getHeight()/height;
         loadSpriteArray();
@@ -51,14 +62,16 @@ public class SpriteSheet {
     public int getWidth(){
         return width;
     }
+
     public int getHeight(){
         return height;
     }
 
-    private BufferedImage loadSprite(String file) throws IOException {
+    private BufferedImage loadSprite(String file) {
         BufferedImage sprite = null;
         try{
-            sprite = ImageIO.read(getClass().getClassLoader().getResourceAsStream(file));
+            sprite = ImageIO.read(new File((file)));
+            System.out.println("Loaded");
         }catch (Exception e){
             System.out.println("Error There is no Image");
         }
@@ -66,10 +79,10 @@ public class SpriteSheet {
     }
 
     public void loadSpriteArray(){
-        spriteArray = new BufferedImage[widthSprite][heightSprite];
-        for(int x = 0 ; x < widthSprite ; x++){
-            for(int y = 0 ; y < heightSprite ; y++){
-                spriteArray[x][y] = getSprite(x, y);
+        spriteArray = new BufferedImage[heightSprite][widthSprite];
+        for(int y = 0 ; y < heightSprite ; y++){
+            for(int x = 0 ; x < widthSprite ; x++){
+                spriteArray[y][x] = getSprite(x, y);
             }
         }
     }
@@ -79,7 +92,8 @@ public class SpriteSheet {
     }
 
     public BufferedImage getSprite(int x,int y){
-        return SPRTIEIMAGE.getSubimage(x , y ,width,height);
+
+        return SPRTIEIMAGE.getSubimage(x * width , y * height ,width,height);
     }
 
     public BufferedImage[] getSpriteArray(int i){
@@ -89,9 +103,10 @@ public class SpriteSheet {
     public BufferedImage[][] getSpriteArray2D(int i){
         return spriteArray;
     }
+
     public static void drawArray(Graphics2D graphics2D, ArrayList<BufferedImage> image, MapVector2D pos, int width, int height, int xOffset, int yOffset){
-        float x = pos.x;
-        float y = pos.y;
+        float x = pos.Xcoordinate;
+        float y = pos.Ycoordinate;
 
         for(int i = 0 ; i  < image.size() ; i++){
             if(image.get(i) != null){
@@ -101,13 +116,14 @@ public class SpriteSheet {
             y+=yOffset;
         }
     }
-    public static void drawArray(Graphics2D graphics2D, Font font,String word, MapVector2D pos,int width,int height,int xOffset,int yOffset){
-        float x = pos.x;
-        float y = pos.y;
+
+    public static void drawArray(Graphics2D graphics2D, Font font, String word, MapVector2D pos, int width, int height, int xOffset, int yOffset){
+        float x = pos.Xcoordinate;
+        float y = pos.Ycoordinate;
 
         for(int i = 0 ; i < word.length() ; i++){
             if(word.charAt(i) != 32){
-                graphics2D.drawImage(font.getLetter(word.charAt(i)), (int) x, (int) y, width ,height,null);
+                graphics2D.drawImage(font.getLetterFromImageUsingChar(word.charAt(i)), (int) x, (int) y, width ,height,null);
             }
             x+=xOffset;
             y+=yOffset;

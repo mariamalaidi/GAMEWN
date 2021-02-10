@@ -10,14 +10,21 @@ public class Animation {
     private int delays;
     private int timesPlayed;
 
-    public Animation(BufferedImage[] frames){
+    public static Animation createAnimation(BufferedImage[] frames){
+        return new Animation(frames);
+    }
+    public static Animation createAnimation(){
+        return  new Animation();
+    }
+
+    private Animation(BufferedImage[] frames){
         timesPlayed = 0;
         setFrames(frames);
     }
-    public Animation(){
+
+    private Animation(){
         timesPlayed = 0;
     }
-
     public void setFrames(BufferedImage[] frames){
         this.frames = frames;
         currentFrame = 0;
@@ -35,7 +42,6 @@ public class Animation {
     public void setNumFrames(int frame){
         this.numFrames = frame;
     }
-
     public void update(){
         if(delays == -1){
             return ;
@@ -50,7 +56,6 @@ public class Animation {
             timesPlayed++;
         }
     }
-
     public int getDelays(){
         return delays;
     }
@@ -63,10 +68,10 @@ public class Animation {
     public BufferedImage getImage(){
         return frames[currentFrame];
     }
-    public boolean hasPlayedOnce(){
+    private boolean hasPlayedOnce(){
         return timesPlayed > 0;
     }
-    public boolean hasPlayed(int i ){
+    private boolean hasPlayed(int i ){
         return timesPlayed == i;
     }
 

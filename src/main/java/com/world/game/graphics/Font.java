@@ -3,40 +3,31 @@ package com.world.game.graphics;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 public class Font {
 
     private BufferedImage FONTSHEET = null;
     private BufferedImage[][] spriteArray;
     private final int TILE_SIZE = 32;
-    public int w;
-    public int h;
-    private int wLetter;
-    private int hLetter;
+    public int width;
+    public int height;
+    private int widthOfTheLetter;
+    private int heightOfTheLetter;
 
-    public Font(String file) {
-        w = TILE_SIZE;
-        h = TILE_SIZE;
-
-        System.out.println("Loading: " + file + "...");
-        FONTSHEET = loadFont(file);
-
-        wLetter = FONTSHEET.getWidth() / w;
-        hLetter = FONTSHEET.getHeight() / h;
-        loadFontArray();
+    public static Font createFont(String file, int width, int height){
+        return new Font(file, width, height);
     }
 
-    public Font(String file, int w, int h) {
-        this.w = w;
-        this.h = h;
+    private Font(String file, int width, int height) {
+        this.width = width;
+        this.height = height;
 
         System.out.println("Loading: " + file + "...");
-        FONTSHEET = loadFont(file);
+        FONTSHEET = readFontFromImage(file);
 
-        wLetter = FONTSHEET.getWidth() / w;
-        hLetter = FONTSHEET.getHeight() / h;
-        loadFontArray();
+        widthOfTheLetter = FONTSHEET.getWidth() / width;
+        heightOfTheLetter = FONTSHEET.getHeight() / height;
+        loadFontArrayFromImage();
     }
 
     public void setSize(int width, int height) {
@@ -45,41 +36,29 @@ public class Font {
     }
 
     public void setWidth(int i) {
-        w = i;
-        wLetter = FONTSHEET.getWidth() / w;
+        width = i;
+        widthOfTheLetter = FONTSHEET.getWidth() / width;
     }
 
     public void setHeight(int i) {
-        h = i;
-        hLetter = FONTSHEET.getHeight() / h;
+        height = i;
+        heightOfTheLetter = FONTSHEET.getHeight() / height;
     }
 
     public int getWidth() {
-        return w;
+        return width;
     }
 
     public int getHeight() {
-        return h;
+        return height;
     }
 
-    private BufferedImage loadFont(String file) {
-        BufferedImage sprite = null;
-        try {
-            sprite = ImageIO.read(new File((file)));
-            System.out.println(sprite);
-        } catch (Exception e) {
-            System.out.println("ERROR: could not load file: " + file);
-        }
+    public void loadFontArrayFromImage() {
+        spriteArray = new BufferedImage[widthOfTheLetter][heightOfTheLetter];
 
-        return sprite;
-    }
-
-    public void loadFontArray() {
-        spriteArray = new BufferedImage[wLetter][hLetter];
-
-        for (int x = 0; x < wLetter; x++) {
-            for (int y = 0; y < hLetter; y++) {
-                spriteArray[x][y] = getLetter(x, y);
+        for (int x = 0; x < widthOfTheLetter; x++) {
+            for (int y = 0; y < heightOfTheLetter; y++) {
+                spriteArray[x][y] = getLetterUsingCoordinates(x, y);
             }
         }
     }
@@ -88,16 +67,28 @@ public class Font {
         return FONTSHEET;
     }
 
-    public BufferedImage getLetter(int x, int y) {
-        BufferedImage img = FONTSHEET.getSubimage(x * w , y * h , w, h);
+    public BufferedImage getLetterUsingCoordinates(int x, int y) {
+        BufferedImage img = FONTSHEET.getSubimage(x * width, y * height, width, height);
         return img;
     }
 
-    public BufferedImage getLetter(char letter) {
+    public BufferedImage getLetterFromImageUsingChar(char letter) {
         int value = letter;
 
-        int x = value % wLetter;
-        int y = value / wLetter;
-        return getLetter(x, y);
+        int x = value % widthOfTheLetter;
+        int y = value / widthOfTheLetter;
+        return getLetterUsingCoordinates(x, y);
     }
+
+    private BufferedImage readFontFromImage(String file) {
+        BufferedImage sprite = null;
+        try {
+            sprite = ImageIO.read(new File((file)));
+            System.out.println(sprite);
+        } catch (Exception e) {
+            System.out.println("ERROR: could not load file: " + file);
+        }
+        return sprite;
+    }
+
 }
