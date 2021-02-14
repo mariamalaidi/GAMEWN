@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.*;
 
 public class GameServer {
+    private InetAddress ipAddress;
     private DatagramSocket socket;
     private GameLauncher game;
 
