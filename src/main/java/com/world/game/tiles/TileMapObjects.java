@@ -5,12 +5,10 @@ import com.world.game.tiles.blocks.Block;
 import com.world.game.tiles.blocks.HoleBlock;
 import com.world.game.tiles.blocks.ObjectBlock;
 import com.world.game.util.MapVector2D;
-
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TileMapObjects extends TileMap{
+public class TileMapObjects implements TileMap{
     private int tileWidth;
     private  int tileHeight;
     public static HashMap<String, Block>tileMapObjects;
@@ -36,7 +34,7 @@ public class TileMapObjects extends TileMap{
                     tempBlock = HoleBlock.createHoleBlock((sprite.getSprite((int) ((temp - 1) % tileColumns), (int) ((temp - 1) / tileColumns) )), MapVector2D.createMapVector2DwithCoordinate((int) (i % width) * tileWidth, (int) (i / height) * tileHeight), tileWidth, tileHeight);
                 }
                 else {
-                    tempBlock = new ObjectBlock((sprite.getSprite((int) ((temp - 1) % tileColumns), (int) ((temp - 1) / tileColumns) )), MapVector2D.createMapVector2DwithCoordinate((int) (i % width) * tileWidth, (int) (i / height) * tileHeight), tileWidth, tileHeight);
+                    tempBlock = ObjectBlock.createObjectBlock((sprite.getSprite((int) ((temp - 1) % tileColumns), (int) ((temp - 1) / tileColumns) )), MapVector2D.createMapVector2DwithCoordinate((int) (i % width) * tileWidth, (int) (i / height) * tileHeight), tileWidth, tileHeight);
                 }
                 tileMapObjects.put(String.valueOf((int)(i % width)) + "," + String.valueOf((int)(i/ height)), tempBlock);
 

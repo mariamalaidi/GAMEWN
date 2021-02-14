@@ -45,7 +45,7 @@ public class TileManger {
         try {
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
-            Document doc = builder.parse(new File(Objects.requireNonNull(getClass().getClassLoader().getResource("src/main/resources/main.xml")).toURI()));
+            Document doc = builder.parse(new File(("src/main/resources/main.xml")));
             doc.getDocumentElement().normalize();
             NodeList list = doc.getElementsByTagName("tileset");
             Node node = list.item(0);

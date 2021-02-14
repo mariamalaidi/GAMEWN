@@ -1,23 +1,24 @@
 package com.world.game.entity;
-
+import com.world.game.graphics.Font;
 import com.world.game.graphics.Sprite;
 import com.world.game.util.KeyHandler;
 import com.world.game.util.MapVector2D;
 import com.world.game.util.MouseHandler;
 
 import java.awt.*;
-import java.util.Objects;
+
 
 public class Player extends  Entity{
 
     private int goldAmount;
-    private String name;
+    public static String name ="";
+    private Font font;
 
     public static Player createPlayer(Sprite sprite, MapVector2D origin, int size){
         return new Player(sprite, origin, size);
     }
 
-    private Player(Sprite sprite, MapVector2D origin, int size) {
+    public Player(Sprite sprite, MapVector2D origin, int size) {
         super(sprite, origin, size);
     }
 
@@ -99,8 +100,13 @@ public class Player extends  Entity{
     @Override
     public void render(Graphics2D g) {
         g.drawImage(animation.getImage(), (int)(position.Xcoordinate), (int)(position.Ycoordinate),size,size,null);
+        Sprite.drawArray(g, font, name, MapVector2D.createMapVector2DwithCoordinate((int)(position.Xcoordinate), (int)(position.Ycoordinate)-20), 20, 20, 32, 0);
 
 
+    }
+
+    public void setFont(Font font) {
+        this.font = font;
     }
 
     public void input(MouseHandler mouseHandler, KeyHandler keyHandler){

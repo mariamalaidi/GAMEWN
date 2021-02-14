@@ -1,5 +1,7 @@
 package com.world.game;
 
+import com.world.game.network.GameClient;
+import com.world.game.network.GameServer;
 import com.world.game.state.GameStateManger;
 import com.world.game.util.KeyHandler;
 import com.world.game.util.MouseHandler;
@@ -7,13 +9,12 @@ import com.world.game.util.MouseHandler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.net.ServerSocket;
 
 public class GamePanel extends JPanel implements Runnable, Active{
     public static int widthOfGameArea;
     public static int heightOfGameArea;
     public static int oldFrameCount;
-
     private BufferedImage imageOfGameArea;
     private Graphics2D graphics2DOFGameWorld;
     private boolean running = false;
@@ -21,7 +22,8 @@ public class GamePanel extends JPanel implements Runnable, Active{
     private MouseHandler mouseHandler;
     private KeyHandler keyHandler;
     private Thread thread;
-
+    private GameClient clientSocket;
+    private GameServer serverSocket;
     private static GamePanel INSTANCE;
 
     synchronized public static GamePanel getInstance(int widthOfGameArea, int heightOfGameArea){
@@ -40,6 +42,15 @@ public class GamePanel extends JPanel implements Runnable, Active{
     }
 
 
+    private void initSockets(){
+        if(JOptionPane.showConfirmDialog(this, "Do you want to run this server")==0) {
+            serverSocket = new GameServer(this);
+            serverSocket.start();
+        }
+        clientSocket = new GameClient(this, "localhost");
+        clientSocket.start();
+    }
+
     public void addNotify() {
         super.addNotify();
         if (thread == null) {
@@ -55,11 +66,14 @@ public class GamePanel extends JPanel implements Runnable, Active{
         mouseHandler = MouseHandler.createMouseHandler(this);
         keyHandler = KeyHandler.createKeyHandler(this);
         gameStateManger = GameStateManger.createGameStateManger();
+        initSockets();
+
     }
 
     @Override
     public void run() {
         init();
+        clientSocket.sendData("ping".getBytes());
         final double GAME_HERTZ = 60.0;
         final double TIME_BEFORE_UPDATE = 1000000000 / GAME_HERTZ;
         final int MOST_UPDATE_BEFORE_RENDER = 3;
