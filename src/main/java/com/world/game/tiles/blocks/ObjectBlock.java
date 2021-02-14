@@ -8,7 +8,11 @@ import java.awt.image.BufferedImage;
 
 public class ObjectBlock extends Block{
 
-    public ObjectBlock(BufferedImage image, MapVector2D position, int width, int height) {
+    public static ObjectBlock createObjectBlock(BufferedImage image, MapVector2D position, int width, int height){
+        return new ObjectBlock(image, position, width, height);
+
+    }
+    private ObjectBlock(BufferedImage image, MapVector2D position, int width, int height) {
         super(image, position, width, height);
     }
 

@@ -16,22 +16,24 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class TileManger {
-    public static  ArrayList<TileMap> tileMapArray;
-    public TileManger(){
-        tileMapArray = new ArrayList<>();
+    public static  ArrayList<TileMap> tilesOfTheMap;
+
+    private TileManger(String path){
+        tilesOfTheMap = new ArrayList<TileMap>();
+        addTileMap(path, 64  , 64);
     }
 
     public static  TileManger createTileManger(String path){
         return new TileManger(path);
     }
 
-    private TileManger(String path){
-        tileMapArray = new ArrayList<TileMap>();
-        addTileMap(path, 64  , 64);
+    public void render(Graphics2D graphics2D){
+        for (TileMap tileMap : tilesOfTheMap) {
+            tileMap.render(graphics2D);
+        }
     }
 
     private void addTileMap(String path, int blockWidth, int blockHeight) {
-
         String imagePath;
         int width = 0;
         int height = 0;
@@ -45,7 +47,7 @@ public class TileManger {
         try {
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
-            Document doc = builder.parse(new File(Objects.requireNonNull(getClass().getClassLoader().getResource("src/main/resources/main.xml")).toURI()));
+            Document doc = builder.parse(new File((getClass().getClassLoader().getResource("src/main/resources/main.xml")).toURI()));
             doc.getDocumentElement().normalize();
             NodeList list = doc.getElementsByTagName("tileset");
             Node node = list.item(0);
@@ -65,25 +67,17 @@ public class TileManger {
                 }
                 data[i] = eElement.getElementsByTagName("data").item(0).getTextContent();
                 if(i >= 1) {
-                    tileMapArray.add(new TileMapNormal(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
+                    tilesOfTheMap.add(new TileMapNormal(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
                 } else {
-                    tileMapArray.add(new TileMapObjects(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
+                    tilesOfTheMap.add(new TileMapObjects(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
                 }
 
             }
-
         } catch (Exception e) {
             System.out.println("ERROR - TILEMANAGER: can not read tilemap:");
             e.printStackTrace();
             System.exit(0);
         }
-
     }
 
-
-    public void render(Graphics2D graphics2D){
-        for(int i = 0 ; i < tileMapArray.size() ; i++){
-            tileMapArray.get(i).render(graphics2D);
-        }
-    }
 }

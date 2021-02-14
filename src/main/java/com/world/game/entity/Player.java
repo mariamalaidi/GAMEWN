@@ -4,9 +4,8 @@ import com.world.game.graphics.Sprite;
 import com.world.game.util.KeyHandler;
 import com.world.game.util.MapVector2D;
 import com.world.game.util.MouseHandler;
-
 import java.awt.*;
-import java.util.Objects;
+
 
 public class Player extends  Entity{
 
@@ -99,8 +98,6 @@ public class Player extends  Entity{
     @Override
     public void render(Graphics2D g) {
         g.drawImage(animation.getImage(), (int)(position.Xcoordinate), (int)(position.Ycoordinate),size,size,null);
-
-
     }
 
     public void input(MouseHandler mouseHandler, KeyHandler keyHandler){
