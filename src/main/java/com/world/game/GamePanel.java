@@ -1,30 +1,32 @@
 package com.world.game;
-
+import com.world.game.entity.MultiPlayer;
 import com.world.game.network.GameClient;
 import com.world.game.network.GameServer;
+import com.world.game.network.packet.Packet00Login;
 import com.world.game.state.GameStateManger;
 import com.world.game.util.KeyHandler;
 import com.world.game.util.MouseHandler;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.net.ServerSocket;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable, Active{
     public static int widthOfGameArea;
     public static int heightOfGameArea;
     public static int oldFrameCount;
-    private BufferedImage imageOfGameArea;
-    private Graphics2D graphics2DOFGameWorld;
-    private boolean running = false;
+    public static Graphics2D graphics2DOFGameWorld;
     private GameStateManger gameStateManger;
+    private BufferedImage imageOfGameArea;
+    private boolean running = false;
     private MouseHandler mouseHandler;
     private KeyHandler keyHandler;
     private Thread thread;
     private GameClient clientSocket;
     private GameServer serverSocket;
+    private MultiPlayer player;
     private static GamePanel INSTANCE;
+    private ArrayList<MultiPlayer> connectedPlayers;
 
     synchronized public static GamePanel getInstance(int widthOfGameArea, int heightOfGameArea){
         if(INSTANCE == null){
@@ -34,6 +36,7 @@ public class GamePanel extends JPanel implements Runnable, Active{
     }
 
     private GamePanel(int widthOfGameArea, int heightOfGameArea) {
+        connectedPlayers = new ArrayList<>();
         GamePanel.widthOfGameArea = widthOfGameArea;
         GamePanel.heightOfGameArea = heightOfGameArea;
         setPreferredSize(new Dimension(widthOfGameArea, heightOfGameArea));
@@ -41,6 +44,9 @@ public class GamePanel extends JPanel implements Runnable, Active{
         requestFocus();
     }
 
+    public GameStateManger getGameStateManger(){
+        return gameStateManger;
+    }
 
     private void initSockets(){
         if(JOptionPane.showConfirmDialog(this, "Do you want to run this server")==0) {
@@ -49,6 +55,13 @@ public class GamePanel extends JPanel implements Runnable, Active{
         }
         clientSocket = new GameClient(this, "localhost");
         clientSocket.start();
+        Packet00Login login = new Packet00Login( JOptionPane.showInputDialog(this, "Please enter a username"));
+        if(serverSocket != null){
+            serverSocket.addConnection(player, login);
+        }
+        clientSocket.sendData("ping".getBytes());
+        login.writeData(clientSocket);
+
     }
 
     public void addNotify() {
@@ -67,13 +80,12 @@ public class GamePanel extends JPanel implements Runnable, Active{
         keyHandler = KeyHandler.createKeyHandler(this);
         gameStateManger = GameStateManger.createGameStateManger();
         initSockets();
-
     }
 
     @Override
     public void run() {
         init();
-        clientSocket.sendData("ping".getBytes());
+
         final double GAME_HERTZ = 60.0;
         final double TIME_BEFORE_UPDATE = 1000000000 / GAME_HERTZ;
         final int MOST_UPDATE_BEFORE_RENDER = 3;
@@ -126,7 +138,6 @@ public class GamePanel extends JPanel implements Runnable, Active{
         }
 
     }
-
 
     public void update() {
         gameStateManger.update();

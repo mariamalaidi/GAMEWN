@@ -101,8 +101,6 @@ public class Player extends  Entity{
     public void render(Graphics2D g) {
         g.drawImage(animation.getImage(), (int)(position.Xcoordinate), (int)(position.Ycoordinate),size,size,null);
         Sprite.drawArray(g, font, name, MapVector2D.createMapVector2DwithCoordinate((int)(position.Xcoordinate), (int)(position.Ycoordinate)-20), 20, 20, 32, 0);
-
-
     }
 
     public void setFont(Font font) {
