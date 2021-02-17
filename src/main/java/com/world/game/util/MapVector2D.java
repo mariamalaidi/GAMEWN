@@ -14,8 +14,8 @@ public class MapVector2D {
     public static MapVector2D createMapVector2D(MapVector2D position){
         return new MapVector2D(position);
     }
-    public  static  MapVector2D createMapVector2DwithCoordinate(float xcoordinate, float ycoordinate){
-        return new MapVector2D(xcoordinate, ycoordinate);
+    public  static  MapVector2D createMapVector2DwithCoordinate(float Xcoordinate, float Ycoordinate){
+        return new MapVector2D(Xcoordinate, Ycoordinate);
     }
 
     private MapVector2D(){

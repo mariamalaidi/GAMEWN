@@ -2,17 +2,13 @@
 package com.world.game.network;
 import com.world.game.GamePanel;
 import com.world.game.entity.MultiPlayer;
-import com.world.game.entity.Player;
 import com.world.game.graphics.Sprite;
 import com.world.game.network.packet.Packet;
 import com.world.game.network.packet.Packet00Login;
 import com.world.game.state.GameStateManger;
 import com.world.game.util.MapVector2D;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +17,6 @@ public class GameServer extends Thread {
     private DatagramSocket socket;
     private GamePanel game;
     private List<MultiPlayer> connectedPlayers;
-    private Player player;
     private GameStateManger gameStateManger;
 
     public GameServer(GamePanel game) {
@@ -36,6 +31,9 @@ public class GameServer extends Thread {
         }
     }
 
+    public DatagramSocket getSocket(){
+        return socket;
+    }
     public void run()  {
         while(true){
             byte[] data = new byte[1024];

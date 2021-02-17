@@ -1,4 +1,5 @@
 package com.world.game;
+
 public class GameLauncher {
 
     public static GameLauncher createGameLauncher() {

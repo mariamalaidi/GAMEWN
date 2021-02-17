@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class Player extends  Entity{
 
-    private int goldAmount;
+    private int goldAmount = 20;
     public static String name ="";
     private Font font;
 

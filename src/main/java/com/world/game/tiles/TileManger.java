@@ -5,8 +5,6 @@ import com.world.game.graphics.Sprite;
 import java.io.File;
 import java.util.ArrayList;
 import java.awt.Graphics2D;
-import java.util.Objects;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -16,6 +14,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class TileManger {
+    private int BLOCKSIZE = 64;
     public static  ArrayList<TileMap> tileMapArray;
     public TileManger(){
         tileMapArray = new ArrayList<>();
@@ -28,6 +27,9 @@ public class TileManger {
     private TileManger(String path){
         tileMapArray = new ArrayList<TileMap>();
         addTileMap(path, 64  , 64);
+    }
+    public int getBLOCKSIZE(){
+        return BLOCKSIZE;
     }
 
     private void addTileMap(String path, int blockWidth, int blockHeight) {
