@@ -6,7 +6,6 @@ import com.world.game.tiles.TileManger;
 import com.world.game.util.MapVector2D;
 import com.world.game.util.MouseHandler;
 import org.junit.Test;
-
 import static org.junit.Assert.*;
 
 public class GameTest {
@@ -16,11 +15,13 @@ public class GameTest {
     }
     @Test
     public void testWidthOfGamePanel(){
-        assertEquals(Window.width, 1280);
+        Window window = new Window();
+        assertEquals(window.width, 1280);
     }
     @Test
     public void testHeightOfGamePanel(){
-        assertEquals(Window.height, 720);
+        Window window = new Window();
+        assertEquals(window.height, 720);
     }
     @Test
     public void testPlayerGoldAmount(){
