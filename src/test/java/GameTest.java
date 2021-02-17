@@ -16,16 +16,6 @@ public class GameTest {
                 gamePanel.getFPS() < 90 );
     }
     @Test
-    public void testWidthOfGamePanel(){
-        Window window = new Window();
-        assertEquals(window.width, 1280);
-    }
-    @Test
-    public void testHeightOfGamePanel(){
-        Window window = new Window();
-        assertEquals(window.height, 720);
-    }
-    @Test
     public void testPlayerGoldAmount(){
         Player player= Player.createPlayer(Sprite.createSpriteFromImage("src/main/resources/Player.png"), MapVector2D.createMapVector2DwithCoordinate(300, 300), 64);
         assertEquals(player.getGoldAmount(),20);
