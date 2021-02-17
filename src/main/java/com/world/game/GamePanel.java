@@ -85,7 +85,6 @@ public class GamePanel extends JPanel implements Runnable, Active{
     @Override
     public void run() {
         init();
-
         final double GAME_HERTZ = 60.0;
         final double TIME_BEFORE_UPDATE = 1000000000 / GAME_HERTZ;
         final int MOST_UPDATE_BEFORE_RENDER = 3;
@@ -139,6 +138,17 @@ public class GamePanel extends JPanel implements Runnable, Active{
 
     }
 
+    public  int getFPS(){
+        return oldFrameCount;
+    }
+
+    public int getWidthOfGameArea(){
+        return widthOfGameArea;
+    }
+
+    public int getHeightOfGameArea(){
+        return heightOfGameArea;
+    }
     public void update() {
         gameStateManger.update();
     }

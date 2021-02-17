@@ -11,7 +11,9 @@ import static org.junit.Assert.*;
 public class GameTest {
     @Test
     public void testGameFrames(){
-        assertTrue(GamePanel.getFPS() < 90 );
+        GamePanel gamePanel = GamePanel.getInstance(33,33);
+        assertTrue(
+                gamePanel.getFPS() < 90 );
     }
     @Test
     public void testWidthOfGamePanel(){
