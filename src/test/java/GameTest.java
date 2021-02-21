@@ -28,11 +28,6 @@ public class GameTest {
     }
 
     @Test
-    public void testBlockSize(){
-        TileManger tileManger = new TileManger();
-        assertEquals(tileManger.getBLOCKSIZE(),64);
-    }
-    @Test
     public void testMouseHandler(){
         GamePanel gamePanel = GamePanel.getInstance(64,64);
         MouseHandler mouseHandler = MouseHandler.createMouseHandler(gamePanel);
