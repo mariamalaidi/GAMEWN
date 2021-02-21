@@ -1,7 +1,5 @@
 package com.world.game.util;
-
 import com.world.game.GamePanel;
-
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -11,16 +9,16 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     private static int mouseY = -1;
     private static int mousePressed = -1;
 
-    public static MouseHandler createMouseHandler(GamePanel gamePanel){
-        return new MouseHandler(gamePanel);
-    }
-
     private MouseHandler(GamePanel gamePanel){
         gamePanel.addMouseListener(this);
     }
 
     private MouseHandler(){
         throw new AssertionError();
+    }
+
+    public static MouseHandler createMouseHandler(GamePanel gamePanel){
+        return new MouseHandler(gamePanel);
     }
 
     public static int getMouseX() {
@@ -39,7 +37,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
     @Override
@@ -54,12 +51,10 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     @Override

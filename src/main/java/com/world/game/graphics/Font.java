@@ -9,26 +9,24 @@ public class Font {
     private BufferedImage FONTSHEET = null;
     private BufferedImage[][] spriteArray;
     private final int TILE_SIZE = 32;
-    public int width;
-    public int height;
     private int widthOfTheLetter;
     private int heightOfTheLetter;
+    public int width;
+    public int height;
+
+    private Font(String file, int width, int height) {
+        this.width = width;
+        this.height = height;
+        FONTSHEET = readFontFromImage(file);
+        widthOfTheLetter = FONTSHEET.getWidth() / width;
+        heightOfTheLetter = FONTSHEET.getHeight() / height;
+        loadFontArrayFromImage();
+    }
 
     public static Font createFont(String file, int width, int height){
         return new Font(file, width, height);
     }
 
-    private Font(String file, int width, int height) {
-        this.width = width;
-        this.height = height;
-
-        System.out.println("Loading: " + file + "...");
-        FONTSHEET = readFontFromImage(file);
-
-        widthOfTheLetter = FONTSHEET.getWidth() / width;
-        heightOfTheLetter = FONTSHEET.getHeight() / height;
-        loadFontArrayFromImage();
-    }
 
     public void setSize(int width, int height) {
         setWidth(width);
@@ -63,9 +61,6 @@ public class Font {
         }
     }
 
-    public BufferedImage getFontSheet() {
-        return FONTSHEET;
-    }
 
     public BufferedImage getLetterUsingCoordinates(int x, int y) {
         BufferedImage img = FONTSHEET.getSubimage(x * width, y * height, width, height);
@@ -74,7 +69,6 @@ public class Font {
 
     public BufferedImage getLetterFromImageUsingChar(char letter) {
         int value = letter;
-
         int x = value % widthOfTheLetter;
         int y = value / widthOfTheLetter;
         return getLetterUsingCoordinates(x, y);

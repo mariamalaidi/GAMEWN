@@ -12,18 +12,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class GameStateManger {
+    private final ArrayList<GameState> states;
+    private final PlayState playerState ;
+
     public static final int PLAY = 0;
     public static final int MENU = 1;
     public static final int PAUSE = 2;
     public static final int GAMEOVER = 3;
     public static MapVector2D position;
-    private ArrayList<GameState> states;
-    private PlayState playerState ;
 
-
-    public static GameStateManger createGameStateManger(){
-        return new GameStateManger();
-    }
 
     private GameStateManger()  {
         playerState = PlayState.createPlayerState(this);
@@ -33,8 +30,8 @@ public class GameStateManger {
         states.add(playerState);
     }
 
-    public void pop(int state) {
-        states.remove(state);
+    public static GameStateManger createGameStateManger(){
+        return new GameStateManger();
     }
 
     public void add(int state) throws IOException {
@@ -50,11 +47,6 @@ public class GameStateManger {
         if (state == GAMEOVER) {
             states.add(new GameOverState(this));
         }
-    }
-
-    public void addAndPop(int state) throws IOException {
-        states.remove(0);
-        add(state);
     }
 
     public void update() {
@@ -81,7 +73,4 @@ public class GameStateManger {
         }
     }
 
-    public void addPlayer(MultiPlayer player){
-        playerState.add(player);
-    }
 }

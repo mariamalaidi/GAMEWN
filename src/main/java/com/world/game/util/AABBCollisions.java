@@ -1,6 +1,6 @@
 package com.world.game.util;
-
 import com.world.game.entity.Entity;
+
 
 public class AABBCollisions {
     private MapVector2D position;
@@ -9,12 +9,8 @@ public class AABBCollisions {
     private  float width;
     private float height;
     private float radius;
+    Entity entity;
     private int size;
-    private Entity entity;
-
-    public static AABBCollisions createAABBCollisions(MapVector2D position, int width, int height){
-        return new AABBCollisions(position, width, height);
-    }
 
     private AABBCollisions(MapVector2D position, int width, int height){
         this.position = position;
@@ -23,21 +19,10 @@ public class AABBCollisions {
         size = Math.max(width, height);
     }
 
-    public MapVector2D getPosition(){
-        return  position;
+    public static AABBCollisions createAABBCollisions(MapVector2D position, int width, int height){
+        return new AABBCollisions(position, width, height);
     }
 
-    public float getWidth() {
-        return width;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public float getRadius() {
-        return radius;
-    }
 
     public void setBox(MapVector2D position, int width, int height){
         this.position = position;
@@ -68,20 +53,33 @@ public class AABBCollisions {
         this.yOffset = yOffset;
     }
 
-    public boolean collides(AABBCollisions bBox){
-        float ax = ((position.getGameWorldCoordinates().Xcoordinate + (xOffset)) + (width / 2));
-        float ay = ((position.getGameWorldCoordinates().Ycoordinate + (yOffset)) + (height/ 2));
-        float bx = ((bBox.position.getGameWorldCoordinates().Xcoordinate + (bBox.xOffset/ 2))+ (width/ 2));
-        float by = ((bBox.position.getGameWorldCoordinates().Ycoordinate + (bBox.yOffset/ 2)) + (height/ 2));
-        if(Math.abs(ax - bx) < (this.width / 2) + (bBox.width / 2)){
-            if(Math.abs(ay - by) < (this.height/ 2) + (bBox.height / 2)){
-                return true;
-            }
-        }
-        return false;
+    public MapVector2D getPosition(){
+        return  position;
     }
 
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    public float getxOffset() {
+        return xOffset;
+    }
+
+    public float getyOffset() {
+        return yOffset;
+    }
+
+
     public boolean columnCircleBox(AABBCollisions aBox){
+
         float cx = (float) (position.getGameWorldCoordinates().Xcoordinate + radius/ Math.sqrt(2) - entity.getSize());
         float cy = (float) (position.getGameWorldCoordinates().Ycoordinate + radius/ Math.sqrt(2) - entity.getSize());
 
@@ -93,5 +91,6 @@ public class AABBCollisions {
         }
         return false;
     }
+
 
 }

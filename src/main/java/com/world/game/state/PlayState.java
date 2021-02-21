@@ -9,47 +9,40 @@ import com.world.game.tiles.TileManger;
 import com.world.game.util.KeyHandler;
 import com.world.game.util.MapVector2D;
 import com.world.game.util.MouseHandler;
-
 import java.awt.*;
-import java.util.ArrayList;
+
+
 
 public class PlayState extends GameState {
-    public static String test = " World Navigator Game !";
-    private Font font;
-    private Player player;
-    private ArrayList<MultiPlayer> players;
-    private TileManger tileManger;
+    private final Font font;
+    private final Player player;
+    private final TileManger tileManger;
+    public static MapVector2D map;
+
     private PlayState(GameStateManger gameStateManger) {
         super(gameStateManger);
-        players = new ArrayList<>();
-        tileManger = TileManger.createTileManger("src/main/resources/main.xml");
+        map = MapVector2D.createMapVector2D();
+        MapVector2D.setGameWorldCoordinates(map.Xcoordinate,map.Ycoordinate);
+        tileManger = TileManger.createTileManger();
         font = Font.createFont("src/main/resources/Font_Main.png", 10, 10);
-       player = Player.createPlayer(Sprite.createSpriteFromImage("src/main/resources/Player.png"), MapVector2D.createMapVector2DwithCoordinate(300, 300), 64);
-       player.setFont(font);
+        player = Player.createPlayer(Sprite.createSpriteFromImage("src/main/resources/Player.png"), MapVector2D.createMapVector2DwithCoordinate((GamePanel.widthOfGameArea / 2) - 32, 0+(GamePanel.heightOfGameArea/2)-32), 64);
+        player.setFont(font);
     }
 
     public static PlayState createPlayerState(GameStateManger gameStateManger) {
         return new PlayState(gameStateManger);
     }
 
-    public void add(MultiPlayer player){
-        player.setFont(font);
-        players.add(player);
-    }
     @Override
     public void update() {
-        for(int i = 0 ; i < players.size() ; i++){
-            players.get(i).update();
-        }
+        MapVector2D.setGameWorldCoordinates(map.Xcoordinate, map.Ycoordinate);
        player.update();
     }
 
     @Override
     public void input(MouseHandler mouseHandler, KeyHandler keyHandler) {
         player.input(mouseHandler, keyHandler);
-        for(int i = 0 ; i < players.size() ; i++){
-            players.get(i).input(mouseHandler, keyHandler);
-        }
+
     }
 
     @Override
@@ -61,12 +54,6 @@ public class PlayState extends GameState {
         Sprite.drawArray(graphics2D, font,"World navigator",  MapVector2D.createMapVector2DwithCoordinate(12, 30
         ),20,20,24,0);
        player.render(graphics2D);
-        System.out.println("player siz "+players.size() );
-        for(int i = 0 ; i < players.size() ; i++){
-            Graphics2D g =graphics2D;
-            players.get(i).render(g);
-        }
-
     }
 
 }

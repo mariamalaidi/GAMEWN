@@ -1,5 +1,4 @@
 package com.world.game;
-import com.world.game.entity.MultiPlayer;
 import com.world.game.network.GameClient;
 import com.world.game.network.GameServer;
 import com.world.game.network.packet.Packet00Login;
@@ -9,13 +8,8 @@ import com.world.game.util.MouseHandler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable, Active{
-    public static int widthOfGameArea;
-    public static int heightOfGameArea;
-    public static int oldFrameCount;
-    public static Graphics2D graphics2DOFGameWorld;
     private GameStateManger gameStateManger;
     private BufferedImage imageOfGameArea;
     private boolean running = false;
@@ -24,10 +18,20 @@ public class GamePanel extends JPanel implements Runnable, Active{
     private Thread thread;
     private GameClient clientSocket;
     private GameServer serverSocket;
-    private MultiPlayer player;
     private static GamePanel INSTANCE;
-    private ArrayList<MultiPlayer> connectedPlayers;
 
+    public static int widthOfGameArea;
+    public static int heightOfGameArea;
+    public static int oldFrameCount;
+    public static Graphics2D graphics2DOFGameWorld;
+
+    private GamePanel(int widthOfGameArea, int heightOfGameArea) {
+        GamePanel.widthOfGameArea = widthOfGameArea;
+        GamePanel.heightOfGameArea = heightOfGameArea;
+        setPreferredSize(new Dimension(widthOfGameArea, heightOfGameArea));
+        setFocusable(true);
+        requestFocus();
+    }
     synchronized public static GamePanel getInstance(int widthOfGameArea, int heightOfGameArea){
         if(INSTANCE == null){
             INSTANCE = new GamePanel(widthOfGameArea, heightOfGameArea);
@@ -35,17 +39,18 @@ public class GamePanel extends JPanel implements Runnable, Active{
         return INSTANCE;
     }
 
-    private GamePanel(int widthOfGameArea, int heightOfGameArea) {
-        connectedPlayers = new ArrayList<>();
-        GamePanel.widthOfGameArea = widthOfGameArea;
-        GamePanel.heightOfGameArea = heightOfGameArea;
-        setPreferredSize(new Dimension(widthOfGameArea, heightOfGameArea));
-        setFocusable(true);
-        requestFocus();
+    public  int getFPS(){
+        return oldFrameCount;
     }
+
 
     public GameStateManger getGameStateManger(){
         return gameStateManger;
+    }
+
+
+    public void update() {
+        gameStateManger.update();
     }
 
     private void initSockets(){
@@ -57,11 +62,22 @@ public class GamePanel extends JPanel implements Runnable, Active{
         clientSocket.start();
         Packet00Login login = new Packet00Login( JOptionPane.showInputDialog(this, "Please enter a username"));
         if(serverSocket != null){
-            serverSocket.addConnection(player, login);
+            //  serverSocket.addConnection(player, login);
         }
         clientSocket.sendData("ping".getBytes());
         login.writeData(clientSocket);
 
+    }
+
+
+    public void init()  {
+        running = true;
+        imageOfGameArea = new BufferedImage(widthOfGameArea, heightOfGameArea, BufferedImage.TYPE_INT_RGB);
+        graphics2DOFGameWorld = (Graphics2D) imageOfGameArea.getGraphics();
+        mouseHandler = MouseHandler.createMouseHandler(this);
+        keyHandler = KeyHandler.createKeyHandler(this);
+        gameStateManger = GameStateManger.createGameStateManger();
+        initSockets();
     }
 
     public void addNotify() {
@@ -72,14 +88,22 @@ public class GamePanel extends JPanel implements Runnable, Active{
         }
     }
 
-    public void init()  {
-        running = true;
-        imageOfGameArea = new BufferedImage(widthOfGameArea, heightOfGameArea, BufferedImage.TYPE_INT_RGB);
-        graphics2DOFGameWorld = (Graphics2D) imageOfGameArea.getGraphics();
-        mouseHandler = MouseHandler.createMouseHandler(this);
-        keyHandler = KeyHandler.createKeyHandler(this);
-        gameStateManger = GameStateManger.createGameStateManger();
-        initSockets();
+    public void input(MouseHandler mouseHandler, KeyHandler keyHandler) {
+        gameStateManger.input(mouseHandler, keyHandler);
+    }
+
+    public void render() {
+        if (graphics2DOFGameWorld != null) {
+            graphics2DOFGameWorld.setColor(new Color(211, 62, 224));
+            graphics2DOFGameWorld.fillRect(0, 0, widthOfGameArea, heightOfGameArea);
+            gameStateManger.render(graphics2DOFGameWorld);
+        }
+    }
+
+    public void draw() {
+        Graphics graphics = this.getGraphics();
+        graphics.drawImage(imageOfGameArea, 0, 0, widthOfGameArea, heightOfGameArea, null);
+        graphics.dispose();
     }
 
     @Override
@@ -95,28 +119,25 @@ public class GamePanel extends JPanel implements Runnable, Active{
         int frameCount = 0;
         int lastSecondTime = (int) (lastUpdateTime / 1000000000);
         oldFrameCount = 0;
-
         while (running) {
             double timeRightNow = System.nanoTime();
             int updateCount = 0;
-            while (((timeRightNow - lastUpdateTime) > TIME_BEFORE_UPDATE) && (updateCount < MOST_UPDATE_BEFORE_RENDER)) {
+            while ((isTimeNowMore(timeRightNow,lastUpdateTime,TIME_BEFORE_UPDATE)) && isUpdatedCountMoreThanBeforeRender(updateCount,MOST_UPDATE_BEFORE_RENDER)) {
                 update();
                 input(mouseHandler, keyHandler);
                 lastUpdateTime += TIME_BEFORE_UPDATE;
                 updateCount++;
             }
-            if ((timeRightNow - lastUpdateTime) > TIME_BEFORE_UPDATE) {
+            if (isTimeNowMore(timeRightNow, lastUpdateTime, TIME_BEFORE_UPDATE)) {
                 lastUpdateTime = timeRightNow - TIME_BEFORE_UPDATE;
             }
-
             input(mouseHandler, keyHandler);
             render();
             lastRenderedTime = timeRightNow;
             frameCount++;
             draw();
-
             int thisSecond = (int) (lastUpdateTime / 1000000000);
-            if (thisSecond > lastSecondTime) {
+            if (isSecondMoreThanLastSecond(thisSecond, lastSecondTime)) {
                 if (frameCount != oldFrameCount) {
                     System.out.println("New Second " + thisSecond + " Frames " + frameCount);
                     oldFrameCount = frameCount;
@@ -124,8 +145,7 @@ public class GamePanel extends JPanel implements Runnable, Active{
                 frameCount = 0;
                 lastSecondTime = thisSecond;
             }
-
-            while (timeRightNow - lastRenderedTime < TOTAL_TIME_BEFORE_RENDER & timeRightNow - lastUpdateTime < TIME_BEFORE_UPDATE) {
+            while (isTimeEqualToRightFrame(timeRightNow , lastRenderedTime , TOTAL_TIME_BEFORE_RENDER  , lastUpdateTime , TIME_BEFORE_UPDATE)) {
                 Thread.yield();
                 try {
                     Thread.sleep(1);
@@ -138,39 +158,21 @@ public class GamePanel extends JPanel implements Runnable, Active{
 
     }
 
-    public  int getFPS(){
-        return oldFrameCount;
-    }
-
-    public int getWidthOfGameArea(){
-        return widthOfGameArea;
-    }
-
-    public int getHeightOfGameArea(){
-        return heightOfGameArea;
-    }
-    public void update() {
-        gameStateManger.update();
-    }
-
-    public void input(MouseHandler mouseHandler, KeyHandler keyHandler) {
-        gameStateManger.input(mouseHandler, keyHandler);
-    }
-
-    public void render() {
-        if (graphics2DOFGameWorld != null) {
-            graphics2DOFGameWorld.setColor(new Color(195, 148, 199));
-            graphics2DOFGameWorld.fillRect(0, 0, widthOfGameArea, heightOfGameArea);
-            gameStateManger.render(graphics2DOFGameWorld);
+    private boolean isTimeEqualToRightFrame(double timeRightNow, double lastRenderedTime, double TOTAL_TIME_BEFORE_RENDER, double lastUpdateTime, double TIME_BEFORE_UPDATE){
+      return  (timeRightNow - lastRenderedTime < TOTAL_TIME_BEFORE_RENDER & timeRightNow - lastUpdateTime < TIME_BEFORE_UPDATE) ;
         }
+
+    private boolean isTimeNowMore(double timeRightNow, double lastUpdateTime, double TIME_BEFORE_UPDATE){
+        return ((timeRightNow - lastUpdateTime) > TIME_BEFORE_UPDATE);
     }
 
-    public void draw() {
-        Graphics graphics = this.getGraphics();
-        graphics.drawImage(imageOfGameArea, 0, 0, widthOfGameArea, heightOfGameArea, null);
-        graphics.dispose();
+    private boolean  isUpdatedCountMoreThanBeforeRender(int updateCount, double MOST_UPDATE_BEFORE_RENDER){
+        return  updateCount < MOST_UPDATE_BEFORE_RENDER;
     }
 
+    private boolean isSecondMoreThanLastSecond(int thisSecond, int lastSecondTime){
+        return thisSecond > lastSecondTime;
+    }
     public String toString(){
         return "Width Of The GamePanel : "+
                 widthOfGameArea+"/nHeight Of the Game Panel : "+heightOfGameArea;

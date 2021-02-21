@@ -72,8 +72,8 @@ public class GameClient  extends Thread{
     private void handleLogin(Packet00Login packet, InetAddress address, int port) {
         System.out.println("[" + address.getHostAddress() + ":" + port + "] " + packet.getUsername()
                 + " has joined the game...");
-        MultiPlayer player = new MultiPlayer((Sprite.createSpriteFromImage("src/main/resources/Player.png")), MapVector2D.createMapVector2DwithCoordinate(300, 300), 64,((Packet00Login) packet).getUsername(), address, port);
-        gameStateManger.addPlayer(player);
+//        MultiPlayer player = new MultiPlayer((Sprite.createSpriteFromImage("src/main/resources/Player.png")), MapVector2D.createMapVector2DwithCoordinate(300, 300), 64,((Packet00Login) packet).getUsername(), address, port);
+//        gameStateManger.addPlayer(player);
     }
 
 

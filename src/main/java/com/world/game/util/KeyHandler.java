@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KeyHandler implements KeyListener {
-    public static List<Key> keys = new ArrayList<Key>();
+    public static List<Key> keys = new ArrayList<>();
     public static KeyHandler createKeyHandler(GamePanel gamePanel){
         return new KeyHandler(gamePanel);
     }
@@ -53,14 +53,14 @@ public class KeyHandler implements KeyListener {
     public Key escape = new Key();
 
     public void releaseAllKeys(){
-        for(int i = 0 ; i < keys.size() ; i++){
-            keys.get(i).down = false;
+        for (Key key : keys) {
+            key.down = false;
         }
     }
 
     public void tick(){
-        for(int i = 0 ; i < keys.size() ; i++){
-            keys.get(i).tick();
+        for (Key key : keys) {
+            key.tick();
         }
     }
 

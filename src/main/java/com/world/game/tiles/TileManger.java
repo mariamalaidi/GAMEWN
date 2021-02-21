@@ -16,23 +16,20 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class TileManger {
     private int BLOCKSIZE = 64;
     public static  ArrayList<TileMap> tileMapArray;
-    public TileManger(){
-        tileMapArray = new ArrayList<>();
+
+    public static  TileManger createTileManger(){
+        return new TileManger();
     }
 
-    public static  TileManger createTileManger(String path){
-        return new TileManger(path);
-    }
-
-    private TileManger(String path){
+    private TileManger(){
         tileMapArray = new ArrayList<TileMap>();
-        addTileMap(path, 64  , 64);
+        addTileMap( 64  , 64);
     }
     public int getBLOCKSIZE(){
         return BLOCKSIZE;
     }
 
-    private void addTileMap(String path, int blockWidth, int blockHeight) {
+    private void addTileMap(int blockWidth, int blockHeight) {
 
         String imagePath;
         int width = 0;
@@ -49,27 +46,28 @@ public class TileManger {
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
             Document doc = builder.parse(new File(("src/main/resources/main.xml")));
             doc.getDocumentElement().normalize();
+
             NodeList list = doc.getElementsByTagName("tileset");
             Node node = list.item(0);
             Element eElement = (Element) node;
             tileWidth = Integer.parseInt(eElement.getAttribute("tilewidth"));
             tileHeight = Integer.parseInt(eElement.getAttribute("tileheight"));
             tileColumns =  Integer.parseInt(eElement.getAttribute("columns"));
+
             sprite = Sprite.createSpriteFromImageWithSize("src/main/resources/dungeon_tiles_formatted_v2.png", tileWidth, tileHeight);
             list = doc.getElementsByTagName("layer");
             layers = list.getLength();
+            System.out.println(list.getLength()+" layers");
             for (int i = 0; i < layers; i++) {
                 node = list.item(i);
                 eElement = (Element) node;
-                if (i <= 0) {
                     width = Integer.parseInt(eElement.getAttribute("width"));
                     height = Integer.parseInt(eElement.getAttribute("height"));
-                }
                 data[i] = eElement.getElementsByTagName("data").item(0).getTextContent();
-                if(i >= 1) {
-                    tileMapArray.add(new TileMapNormal(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
+                if(i <= 0) {
+                    tileMapArray.add(TileMapNormal.createTileMapNormal(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
                 } else {
-                    tileMapArray.add(new TileMapObjects(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
+                    tileMapArray.add(TileMapObjects.createTileMapObject(data[i], sprite, width, height, blockWidth, blockHeight, tileColumns));
                 }
 
             }
@@ -80,8 +78,8 @@ public class TileManger {
             System.exit(0);
         }
 
-    }
 
+    }
 
     public void render(Graphics2D graphics2D){
         for(int i = 0 ; i < tileMapArray.size() ; i++){
