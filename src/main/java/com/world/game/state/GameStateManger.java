@@ -1,8 +1,6 @@
 package com.world.game.state;
 
 import com.world.game.GamePanel;
-import com.world.game.entity.MultiPlayer;
-import com.world.game.entity.Player;
 import com.world.game.util.KeyHandler;
 import com.world.game.util.MapVector2D;
 import com.world.game.util.MouseHandler;
@@ -14,7 +12,7 @@ import java.util.ArrayList;
 public class GameStateManger {
     private final ArrayList<GameState> states;
     private final PlayState playerState ;
-
+    private String userName;
     public static final int PLAY = 0;
     public static final int MENU = 1;
     public static final int PAUSE = 2;
@@ -22,7 +20,7 @@ public class GameStateManger {
     public static MapVector2D position;
 
 
-    private GameStateManger()  {
+    public GameStateManger()  {
         playerState = PlayState.createPlayerState(this);
         position = MapVector2D.createMapVector2DwithCoordinate(GamePanel.widthOfGameArea, GamePanel.heightOfGameArea);
         MapVector2D.setGameWorldCoordinates(position.Xcoordinate, position.Ycoordinate);

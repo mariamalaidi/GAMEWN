@@ -1,7 +1,6 @@
 package com.world.game.state;
 
 import com.world.game.GamePanel;
-import com.world.game.entity.MultiPlayer;
 import com.world.game.entity.Player;
 import com.world.game.graphics.Font;
 import com.world.game.graphics.Sprite;
@@ -37,11 +36,13 @@ public class PlayState extends GameState {
     public void update() {
         MapVector2D.setGameWorldCoordinates(map.Xcoordinate, map.Ycoordinate);
        player.update();
+
     }
 
     @Override
     public void input(MouseHandler mouseHandler, KeyHandler keyHandler) {
         player.input(mouseHandler, keyHandler);
+
 
     }
 

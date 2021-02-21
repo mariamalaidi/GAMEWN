@@ -18,7 +18,6 @@ public class Sprite {
         int TILE_SIZE = 32;
         width = TILE_SIZE;
         height = TILE_SIZE;
-        System.out.println("Loading : "+file+" ...");
         SPRTIEIMAGE = loadSprite(file);
         widthSprite = SPRTIEIMAGE.getWidth()/width;
         heightSprite = SPRTIEIMAGE.getHeight()/height;
@@ -28,7 +27,6 @@ public class Sprite {
     private Sprite(String file, int width, int height)  {
         this.width = width;
         this.height = height;
-        System.out.println("Loading : "+file+" ...");
         SPRTIEIMAGE = loadSprite(file);
         widthSprite = SPRTIEIMAGE.getWidth()/width;
         heightSprite = SPRTIEIMAGE.getHeight()/height;
@@ -97,7 +95,6 @@ public class Sprite {
         BufferedImage sprite = null;
         try{
             sprite = ImageIO.read(new File((file)));
-            System.out.println("Loaded");
         }catch (Exception e){
             System.out.println("Error There is no Image");
         }

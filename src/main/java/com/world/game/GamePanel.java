@@ -1,23 +1,27 @@
 package com.world.game;
+import com.world.game.entity.Player;
 import com.world.game.network.GameClient;
 import com.world.game.network.GameServer;
 import com.world.game.network.packet.Packet00Login;
 import com.world.game.state.GameStateManger;
+import com.world.game.state.MultiplayerStateManger;
 import com.world.game.util.KeyHandler;
 import com.world.game.util.MouseHandler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements Runnable, Active{
     private GameStateManger gameStateManger;
+    private ArrayList<MultiplayerStateManger> connectedPlayers;
     private BufferedImage imageOfGameArea;
     private boolean running = false;
+    GameServer serverSocket;
     private MouseHandler mouseHandler;
     private KeyHandler keyHandler;
     private Thread thread;
     private GameClient clientSocket;
-    private GameServer serverSocket;
     private static GamePanel INSTANCE;
 
     public static int widthOfGameArea;
@@ -30,6 +34,7 @@ public class GamePanel extends JPanel implements Runnable, Active{
         GamePanel.heightOfGameArea = heightOfGameArea;
         setPreferredSize(new Dimension(widthOfGameArea, heightOfGameArea));
         setFocusable(true);
+        connectedPlayers = new ArrayList<>();
         requestFocus();
     }
     synchronized public static GamePanel getInstance(int widthOfGameArea, int heightOfGameArea){
@@ -50,25 +55,31 @@ public class GamePanel extends JPanel implements Runnable, Active{
 
 
     public void update() {
-        gameStateManger.update();
+       gameStateManger.update();
+        for(int i = 0 ; i < connectedPlayers.size() ; i++){
+            connectedPlayers.get(i).input(mouseHandler, keyHandler);
+        }
     }
 
     private void initSockets(){
         if(JOptionPane.showConfirmDialog(this, "Do you want to run this server")==0) {
-            serverSocket = new GameServer(this);
+           serverSocket = new GameServer(this);
             serverSocket.start();
         }
         clientSocket = new GameClient(this, "localhost");
         clientSocket.start();
-        Packet00Login login = new Packet00Login( JOptionPane.showInputDialog(this, "Please enter a username"));
-        if(serverSocket != null){
-            //  serverSocket.addConnection(player, login);
-        }
+        String name = JOptionPane.showInputDialog(this, "Please enter a username");
+        Player.name = name;
+        Packet00Login login = new Packet00Login( name);
+
         clientSocket.sendData("ping".getBytes());
         login.writeData(clientSocket);
 
     }
 
+    public void add(MultiplayerStateManger multiplayerStateManger){
+        connectedPlayers.add(multiplayerStateManger);
+    }
 
     public void init()  {
         running = true;
@@ -77,7 +88,9 @@ public class GamePanel extends JPanel implements Runnable, Active{
         mouseHandler = MouseHandler.createMouseHandler(this);
         keyHandler = KeyHandler.createKeyHandler(this);
         gameStateManger = GameStateManger.createGameStateManger();
-        initSockets();
+       initSockets();
+
+
     }
 
     public void addNotify() {
@@ -89,15 +102,23 @@ public class GamePanel extends JPanel implements Runnable, Active{
     }
 
     public void input(MouseHandler mouseHandler, KeyHandler keyHandler) {
-        gameStateManger.input(mouseHandler, keyHandler);
+       gameStateManger.input(mouseHandler, keyHandler);
+       for(int i = 0 ; i < connectedPlayers.size() ; i++){
+           connectedPlayers.get(i).input(mouseHandler, keyHandler);
+       }
+
     }
 
     public void render() {
         if (graphics2DOFGameWorld != null) {
             graphics2DOFGameWorld.setColor(new Color(211, 62, 224));
             graphics2DOFGameWorld.fillRect(0, 0, widthOfGameArea, heightOfGameArea);
-            gameStateManger.render(graphics2DOFGameWorld);
+           gameStateManger.render(graphics2DOFGameWorld);
+            for(int i = 0 ; i < connectedPlayers.size() ; i++){
+                connectedPlayers.get(i).render(graphics2DOFGameWorld);
+            }
         }
+
     }
 
     public void draw() {
@@ -139,7 +160,6 @@ public class GamePanel extends JPanel implements Runnable, Active{
             int thisSecond = (int) (lastUpdateTime / 1000000000);
             if (isSecondMoreThanLastSecond(thisSecond, lastSecondTime)) {
                 if (frameCount != oldFrameCount) {
-                    System.out.println("New Second " + thisSecond + " Frames " + frameCount);
                     oldFrameCount = frameCount;
                 }
                 frameCount = 0;

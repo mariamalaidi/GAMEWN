@@ -78,7 +78,6 @@ public class Font {
         BufferedImage sprite = null;
         try {
             sprite = ImageIO.read(new File((file)));
-            System.out.println(sprite);
         } catch (Exception e) {
             System.out.println("ERROR: could not load file: " + file);
         }

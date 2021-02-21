@@ -1,12 +1,8 @@
-
 package com.world.game.network;
 import com.world.game.GamePanel;
-import com.world.game.entity.MultiPlayer;
-import com.world.game.graphics.Sprite;
 import com.world.game.network.packet.Packet;
 import com.world.game.network.packet.Packet00Login;
-import com.world.game.state.GameStateManger;
-import com.world.game.util.MapVector2D;
+import com.world.game.state.MultiplayerStateManger;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -16,13 +12,10 @@ import java.util.List;
 public class GameServer extends Thread {
     private DatagramSocket socket;
     private GamePanel game;
-    private List<MultiPlayer> connectedPlayers;
-    private GameStateManger gameStateManger;
-
+    private List<MultiplayerStateManger> connectedPlayers;
     public GameServer(GamePanel game) {
-        connectedPlayers = new ArrayList<MultiPlayer>();
+        connectedPlayers = new ArrayList<>();
         this.game = game;
-        this.gameStateManger = game.getGameStateManger();
         try {
             this.socket = new DatagramSocket(1331);
         } catch (SocketException e) {
@@ -60,8 +53,8 @@ public class GameServer extends Thread {
                 packet = new Packet00Login(data);
                 System.out.println("[" + address.getHostAddress() + ":" + port + "] "
                         + ((Packet00Login) packet).getUsername() + " has connected...");
-               MultiPlayer player = new MultiPlayer((Sprite.createSpriteFromImage("src/main/resources/Player.png")), MapVector2D.createMapVector2DwithCoordinate(300, 300), 64,((Packet00Login) packet).getUsername(), address, port);
-            //    gameStateManger.addPlayer(player);
+                String name = ((Packet00Login) packet).getUsername();
+              MultiplayerStateManger player = new MultiplayerStateManger(name,address, port);
              this.addConnection(player, (Packet00Login) packet);
                 break;
 
@@ -69,9 +62,9 @@ public class GameServer extends Thread {
         }
     }
 
-    public void addConnection(MultiPlayer player, Packet00Login packet) {
+    public void addConnection(MultiplayerStateManger player, Packet00Login packet) {
         boolean alreadyConnected = false;
-        for(MultiPlayer p: this.connectedPlayers){
+        for(MultiplayerStateManger p: this.connectedPlayers){
             if(player.getName().equalsIgnoreCase(p.getName())){
                 if(p.ipAddress == null){
                     p.ipAddress = player.ipAddress;
@@ -104,7 +97,7 @@ public class GameServer extends Thread {
     }
 
     public void sendDataToAllClients(byte[] data) {
-        for(MultiPlayer player: connectedPlayers){
+        for(MultiplayerStateManger player: connectedPlayers){
             sendData(data, player.ipAddress, player.port);
         }
     }

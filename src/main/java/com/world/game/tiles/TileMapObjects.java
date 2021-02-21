@@ -20,7 +20,7 @@ public class TileMapObjects implements TileMap {
         for (int i = 0; i < (width * height); i++) {
             int temp = Integer.parseInt(block[i].replaceAll("\\s+", ""));
             if (temp != 0) {
-                System.out.println("Temp " + temp);
+
                 if (temp == 254)
                     tempBlock = ChestBlock.createChestBlock((sprite.getSprite(((temp - 1) % tileColumns), ((temp - 1) / tileColumns))), MapVector2D.createMapVector2DwithCoordinate((i % width) * tileWidth, (i / height) * tileHeight), tileWidth, tileHeight);
                 else if (temp == 263) {

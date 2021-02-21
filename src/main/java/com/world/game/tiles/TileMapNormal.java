@@ -16,8 +16,7 @@ public class TileMapNormal implements TileMap{
         String[] block = data.split(",");
         for(int i = 0 ; i < (width * height) ; i++){
             int temp = Integer.parseInt(block[i].replaceAll("\\s+",""));
-            if(temp != 0){
-                System.out.println("temp normal "+temp);
+            if(temp != 0){ ;
                 if(isTempHole(temp)){
                     tempBlock = HoleBlock.createHoleBlock((sprite.getSprite(((temp - 1) % tileColumns),((temp - 1) / tileColumns) )), MapVector2D.createMapVector2DwithCoordinate( (i % width) * tileWidth,  (i / height) * tileHeight), tileWidth, tileHeight);
                 }

@@ -1,4 +1,5 @@
 package com.world.game.entity;
+import com.world.game.GameLauncher;
 import com.world.game.GamePanel;
 import com.world.game.graphics.Font;
 import com.world.game.graphics.Sprite;
@@ -6,11 +7,15 @@ import com.world.game.state.PlayState;
 import com.world.game.util.KeyHandler;
 import com.world.game.util.MapVector2D;
 import com.world.game.util.MouseHandler;
+
+import javax.swing.*;
 import java.awt.*;
 
 public class Player extends  Entity{
     private Font font;
     private final int goldAmount = 20;
+    public static boolean key;
+    public static boolean specialKey;
 
     public static String name ="";
 
@@ -114,6 +119,9 @@ public class Player extends  Entity{
             if(animation.hasPlayedOnce()){
                 resetPosition();
                 fallen = false;
+                JOptionPane.showMessageDialog(null,"Game Over");
+                GameLauncher.window.closeWindow();
+
             }
         }
     }
@@ -160,7 +168,6 @@ public class Player extends  Entity{
     @Override
     public void render(Graphics2D g) {
         g.setColor(new Color(245, 15, 15));
-        g.drawRect( (int)(position.getGameWorldCoordinates().Xcoordinate + bounds.getxOffset()), (int)(position.getGameWorldCoordinates().Ycoordinate + bounds.getyOffset()), (int) bounds.getWidth(), (int) bounds.getHeight());
         g.drawImage(animation.getImage(), (int)(position.getGameWorldCoordinates().Xcoordinate), (int)(position.getGameWorldCoordinates().Ycoordinate),size,size,null);
         Sprite.drawArray(g, font, name, MapVector2D.createMapVector2DwithCoordinate( (int)(position.getGameWorldCoordinates().Xcoordinate), (int)(position.getGameWorldCoordinates().Ycoordinate) - 20), 20, 20, 32, 0);
     }
